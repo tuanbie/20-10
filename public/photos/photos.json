@@ -1,4 +1,59 @@
 {
   "slider": [],
-  "spots": {}
+  "spots": {
+    "reason-0": {
+      "id": "p-mvgfvewr-wgdqc",
+      "file": "p-mvgfvewr-wgdqc.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "letter": {
+      "id": "p-mvgfuvid-fk9or",
+      "file": "p-mvgfuvid-fk9or.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "reason-1": {
+      "id": "p-mvgfxu3r-30oma",
+      "file": "p-mvgfxu3r-30oma.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "reason-2": {
+      "id": "p-mvgfyi8i-6gpc4",
+      "file": "p-mvgfyi8i-6gpc4.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "reason-3": {
+      "id": "p-mvgg01rc-127d1",
+      "file": "p-mvgg01rc-127d1.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "reason-4": {
+      "id": "p-mvgg0m6q-l2j1g",
+      "file": "p-mvgg0m6q-l2j1g.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "reason-5": {
+      "id": "p-mvgg10os-ot81l",
+      "file": "p-mvgg10os-ot81l.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "wishes": {
+      "id": "p-mvgg1rg1-dippk",
+      "file": "p-mvgg1rg1-dippk.jpg",
+      "caption": "",
+      "date": ""
+    },
+    "finale": {
+      "id": "p-mvgg3g9b-iddte",
+      "file": "p-mvgg3g9b-iddte.jpg",
+      "caption": "",
+      "date": ""
+    }
+  }
 }
