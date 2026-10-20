@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { CONFIG } from "../config.js";
+import Spot from "./Spot.jsx";
 
 function useSince(startDate) {
   const start = useMemo(() => {
@@ -31,6 +32,7 @@ export default function Hero() {
   const t = useSince(CONFIG.startDate);
   return (
     <header className="hero wrap" id="top">
+      <Spot k="hero" className="snap hero-photo" caption />
       <h1 className="hero-title">Chúc mừng 20{"\u00a0"}tháng{"\u00a0"}10, {CONFIG.herName}.</h1>
       <p className="hero-lead">{CONFIG.heroLead}</p>
       {t && (

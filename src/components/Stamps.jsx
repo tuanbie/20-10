@@ -2,12 +2,14 @@ import { useState } from "react";
 import { CONFIG } from "../config.js";
 import { burst } from "../lib/fx.js";
 import { Music } from "../lib/music.js";
+import Spot, { useSpots } from "./Spot.jsx";
 
 const VARIANTS = ["v-rose", "v-leaf", "v-paper"];
 const TILTS = [-2, 1.5, -1, 2, -1.5, 1];
 
 export default function Stamps() {
   const [flipped, setFlipped] = useState(() => new Set());
+  const { spots, editing } = useSpots();
 
   const toggle = (i, el) => {
     const on = !flipped.has(i);
@@ -33,7 +35,7 @@ export default function Stamps() {
           <button
             key={r.title}
             type="button"
-            className={`stamp${flipped.has(i) ? " flipped" : ""}`}
+            className={`stamp${flipped.has(i) ? " flipped" : ""}${spots[`reason-${i}`] || editing ? " has-photo" : ""}`}
             style={{ "--tilt": `${TILTS[i % TILTS.length]}deg` }}
             aria-pressed={flipped.has(i)}
             aria-label={`${r.title}: ${r.text}`}
@@ -46,6 +48,7 @@ export default function Stamps() {
                   <i />
                   <span>20/10</span>
                 </span>
+                <Spot k={`reason-${i}`} className="stamp-photo" inButton />
                 <span className="stamp-title">{r.title}</span>
                 <span className="stamp-hint">Chạm để lật</span>
               </span>

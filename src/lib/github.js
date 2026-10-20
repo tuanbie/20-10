@@ -1,10 +1,12 @@
 // Commit ảnh + photos.json vào repo bằng GitHub API, gộp tất cả trong MỘT commit.
+import { albumFiles } from "./album.js";
+
 const API = "https://api.github.com";
 
 const decodeB64Utf8 = (b64) =>
   new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, "")), (c) => c.charCodeAt(0)));
 
-export async function commitPhotos({ owner, repo, branch, token }, { photos, files }, message) {
+export async function commitPhotos({ owner, repo, branch, token }, { album, files }, message) {
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: "application/vnd.github+json",
@@ -41,10 +43,10 @@ export async function commitPhotos({ owner, repo, branch, token }, { photos, fil
   const headSha = ref.object.sha;
   const head = await gh("GET", `${base}/git/commits/${headSha}`);
 
-  let old = [];
+  let old = new Set();
   try {
     const file = await gh("GET", `${base}/contents/public/photos/photos.json?ref=${encodeURIComponent(branch)}`);
-    old = JSON.parse(decodeB64Utf8(file.content));
+    old = albumFiles(JSON.parse(decodeB64Utf8(file.content)));
   } catch (err) {
     if (err.status !== 404) throw err;
   }
@@ -54,17 +56,15 @@ export async function commitPhotos({ owner, repo, branch, token }, { photos, fil
     const blob = await gh("POST", `${base}/git/blobs`, { content, encoding: "base64" });
     tree.push({ path: `public/photos/${file}`, mode: "100644", type: "blob", sha: blob.sha });
   }
-  const keep = new Set(photos.map((p) => p.file));
-  for (const p of Array.isArray(old) ? old : []) {
-    if (p?.file && !keep.has(p.file)) {
-      tree.push({ path: `public/photos/${p.file}`, mode: "100644", type: "blob", sha: null });
-    }
+  const keep = albumFiles(album);
+  for (const file of old) {
+    if (!keep.has(file)) tree.push({ path: `public/photos/${file}`, mode: "100644", type: "blob", sha: null });
   }
   tree.push({
     path: "public/photos/photos.json",
     mode: "100644",
     type: "blob",
-    content: JSON.stringify(photos, null, 2) + "\n",
+    content: JSON.stringify(album, null, 2) + "\n",
   });
 
   const newTree = await gh("POST", `${base}/git/trees`, { base_tree: head.tree.sha, tree });

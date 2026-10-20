@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CONFIG } from "./config.js";
 import { burst, setFxRoot } from "./lib/fx.js";
 import { Music } from "./lib/music.js";
 import { petals } from "./lib/petals.js";
-import { loadPhotos } from "./lib/photos.js";
+import { cloneAlbum, EMPTY_ALBUM, loadAlbum } from "./lib/photos.js";
 import Intro from "./components/Intro.jsx";
 import Hero from "./components/Hero.jsx";
 import Letter from "./components/Letter.jsx";
@@ -14,14 +14,16 @@ import Finale from "./components/Finale.jsx";
 import AdminDot from "./components/AdminDot.jsx";
 import LoginDialog from "./components/LoginDialog.jsx";
 import PhotoEditor from "./components/PhotoEditor.jsx";
+import { SpotContext } from "./components/Spot.jsx";
 
 export default function App() {
   const [opened, setOpened] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
-  const [photos, setPhotos] = useState([]);
+  const [album, setAlbum] = useState(EMPTY_ALBUM);
   const [draft, setDraft] = useState(null);
   const [vaultKey, setVaultKey] = useState(null);
   const [panel, setPanel] = useState(null); // null | "login" | "editor"
+  const [spotFocus, setSpotFocus] = useState(null); // vị trí ảnh vừa được bấm trên trang khi đang sửa
   const fxRef = useRef(null);
   const petalsRef = useRef(null);
 
@@ -30,7 +32,7 @@ export default function App() {
     document.title = `Gửi ${CONFIG.herName}, 20/10`;
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
-    loadPhotos().then(setPhotos);
+    loadAlbum().then(setAlbum);
   }, []);
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function App() {
   };
 
   const openEditor = () => {
-    setDraft(photos.map((p) => ({ ...p })));
+    setDraft(cloneAlbum(album));
     setPanel("editor");
   };
   const onAdmin = () => (vaultKey ? openEditor() : setPanel("login"));
@@ -85,10 +87,17 @@ export default function App() {
     closeEditor();
   };
   const onSaved = (saved) => {
-    setPhotos(saved);
-    setDraft(saved.map((p) => ({ ...p })));
+    setAlbum(saved);
+    setDraft(cloneAlbum(saved));
   };
   const closeLogin = useCallback(() => setPanel(null), []);
+
+  const editing = panel === "editor";
+  const shown = draft ?? album;
+  const spotCtx = useMemo(
+    () => ({ spots: shown.spots, editing, pick: (key) => setSpotFocus({ key, at: Date.now() }) }),
+    [shown.spots, editing]
+  );
 
   return (
     <>
@@ -115,16 +124,18 @@ export default function App() {
         </>
       )}
 
-      <main>
-        <Hero />
-        <Letter active={opened} />
-        <Stamps />
-        <PhotoSlider photos={draft ?? photos} editing={panel === "editor"} />
-        <Wishes />
-        <Finale />
-      </main>
+      <SpotContext.Provider value={spotCtx}>
+        <main>
+          <Hero />
+          <Letter active={opened} />
+          <Stamps />
+          <PhotoSlider photos={shown.slider} editing={editing} />
+          <Wishes />
+          <Finale />
+        </main>
+      </SpotContext.Provider>
 
-      <footer className={`footer${panel === "editor" ? " with-editor" : ""}`}>
+      <footer className={`footer${editing ? " with-editor" : ""}`}>
         <p>Từ {CONFIG.myName}, với tất cả yêu thương.</p>
         <button type="button" className="ghost-btn" onClick={() => window.location.reload()}>
           Mở lại phong bì
@@ -132,12 +143,13 @@ export default function App() {
       </footer>
 
       {panel === "login" && <LoginDialog onClose={closeLogin} onSuccess={onLoggedIn} />}
-      {panel === "editor" && draft && (
+      {editing && draft && (
         <PhotoEditor
           draft={draft}
           setDraft={setDraft}
-          published={photos}
+          published={album}
           vaultKey={vaultKey}
+          focus={spotFocus}
           onClose={closeEditor}
           onSaved={onSaved}
           onLock={lock}

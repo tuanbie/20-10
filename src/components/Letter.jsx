@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CONFIG } from "../config.js";
+import Spot from "./Spot.jsx";
 
 const PUNCT = /[.,!?…]/;
 
@@ -61,6 +62,7 @@ export default function Letter({ active }) {
       <article ref={ref} className={`paper${done ? " done" : ""}`}>
         <p className="paper-date">Ngày 20 tháng 10 năm {new Date().getFullYear()}</p>
         <p className="paper-greet">{CONFIG.letterGreeting}</p>
+        <Spot k="letter" className="snap letter-photo" caption />
         <div className="sr-only">{CONFIG.letter.join(" ")}</div>
         <div className="paper-body" aria-hidden="true">
           {visible.map((text, i) => (

@@ -6,7 +6,7 @@ export const CONFIG = {
   heroLead: "Hôm nay là ngày của phụ nữ Việt Nam, và là ngày anh muốn nói lời cảm ơn em.",
   counterPrefix: "Mình quen nhau đã được",
 
-  letterGreeting: "Em thương,",
+  letterGreeting: "Em eo,",
   letter: [
     "Hôm nay là 20/10, ngày cả nước dành để nói lời cảm ơn với những người phụ nữ. Nhưng với anh, ngày nào có em cũng đáng được trân trọng như hôm nay.",
     "Cảm ơn em vì đã kiên nhẫn với anh những lúc anh bận rộn, vì những tin nhắn hỏi han mỗi tối, vì những lần em giận rồi lại thương, và vì đã chọn ở bên anh.",

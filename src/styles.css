@@ -389,6 +389,62 @@ body.opened .hero { animation: appear 1.1s ease both; }
 }
 .final-text { max-width: 30rem; margin: 16px auto 0; font-size: 1.05rem; color: var(--ink-soft); }
 
+/* =========================================================
+   Ảnh gắn ở các phần: đầu trang, lá thư, tem, lời chúc, trái tim
+   ========================================================= */
+.spot { display: block; margin: 0; padding: 0; border: 0; background: none; }
+button.spot { font: inherit; color: inherit; text-align: inherit; cursor: pointer; }
+.spot.editing { cursor: pointer; outline: 2px dashed transparent; outline-offset: 4px; transition: outline-color 0.2s; }
+.spot.editing:hover, .spot.editing:focus-visible { outline-color: var(--rose); }
+[data-spot] { scroll-margin-top: 24px; }
+.spot-img { display: block; aspect-ratio: 4 / 5; overflow: hidden; background: var(--line); }
+.spot-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.spot-empty {
+  display: grid; place-items: center; aspect-ratio: 4 / 5; padding: 8px;
+  border: 1.5px dashed currentColor; border-radius: 4px; opacity: 0.75;
+  font-family: var(--f-body); font-style: normal; font-weight: 400;
+  font-size: 0.75rem; line-height: 1.3; text-align: center;
+}
+.snap .spot-empty { color: var(--ink-soft); }
+
+/* Khung polaroid nhỏ */
+.snap {
+  background: var(--paper); border: 1px solid var(--line);
+  padding: 8px; box-shadow: var(--shadow);
+  transform: rotate(var(--tilt, 2deg));
+}
+.spot-cap {
+  display: block; padding: 8px 2px 2px; text-align: center;
+  font-family: var(--f-serif); font-style: italic; font-weight: 500; font-size: 1.05rem; line-height: 1.25;
+}
+
+.hero-photo { --tilt: 3deg; align-self: flex-end; width: min(40vw, 210px); margin: 0 4px 8px 0; }
+
+.letter-photo { --tilt: 3deg; position: relative; float: right; width: clamp(108px, 32%, 190px); margin: 4px -4px 14px 18px; }
+.letter-photo::before {
+  content: ""; position: absolute; z-index: 1; top: -10px; left: 50%;
+  width: 64px; height: 20px; transform: translateX(-50%) rotate(4deg);
+  background: var(--tape); border-radius: 2px;
+}
+.paper-sign { clear: both; }
+
+.stamp-photo { flex: 1 1 auto; min-height: 0; margin: 8px 4px; }
+.stamp-photo .spot-img, .stamp-photo .spot-empty { position: absolute; inset: 0; aspect-ratio: auto; }
+.stamp-photo .spot-img { border: 2px solid currentColor; }
+.stamp.has-photo .stamp-hint { display: none; }
+.stamp.has-photo .stamp-title { font-size: clamp(1.05rem, 3.8vw, 1.3rem); }
+
+.wishes-wrap.has-photo .wishes-photo { --tilt: -2.5deg; width: min(56vw, 220px); margin: 28px auto 0; }
+@media (min-width: 640px) {
+  .wishes-wrap.has-photo { display: grid; grid-template-columns: 1fr 210px; gap: 36px; align-items: center; }
+  .wishes-wrap.has-photo .wishes-photo { width: auto; margin: 28px 0 0; }
+}
+
+.heart-photo { opacity: 0; transition: opacity 1.2s ease 0.3s; }
+.heart-photo.on { opacity: 1; }
+.heart-line { fill: none; stroke: var(--rose); stroke-width: 2.5; }
+.spot-edit { margin-top: 16px; }
+
 /* Chân trang */
 .footer { text-align: center; padding: 48px 22px 64px; color: var(--ink-soft); }
 .footer p { margin: 0 0 22px; font-family: var(--f-serif); font-style: italic; font-size: 1.3rem; }
@@ -640,6 +696,35 @@ body.opened .hero { animation: appear 1.1s ease both; }
 .editor-foot { display: flex; flex-direction: column; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
 .editor-mode { margin: 0; font-size: 0.82rem; line-height: 1.6; color: var(--ink-soft); }
 .editor-foot .primary-btn { align-self: flex-end; margin-top: 12px; }
+
+.tabs { display: flex; gap: 4px; margin-top: 12px; padding: 4px; border-radius: 999px; background: var(--bg); }
+.tab {
+  flex: 1; border: 0; border-radius: 999px; background: none; padding: 7px 10px;
+  font-size: 0.88rem; color: var(--ink-soft); cursor: pointer;
+}
+.tab.on { background: var(--paper); color: var(--ink); font-weight: 500; box-shadow: 0 2px 8px -4px rgba(0, 0, 0, 0.3); }
+.tab small { margin-left: 4px; font-size: 0.75rem; opacity: 0.8; }
+.tab:focus-visible { outline: 2px dashed var(--rose); outline-offset: 2px; }
+.spots-help { margin-top: 12px; font-size: 0.85rem; }
+.spot-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.spot-row {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 6px;
+  border: 1px solid var(--line); border-radius: 12px; background: none; cursor: pointer; text-align: left;
+}
+.spot-row.on { border-color: var(--rose); background: var(--bg); }
+.spot-row:focus-visible { outline: 2px dashed var(--rose); outline-offset: 2px; }
+.spot-thumb {
+  flex: 0 0 auto; width: 40px; height: 50px; border-radius: 6px; overflow: hidden;
+  background: var(--bg); display: grid; place-items: center; color: var(--rose); font-size: 1.2rem;
+}
+.spot-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.spot-label { display: flex; flex-direction: column; font-size: 0.92rem; line-height: 1.35; }
+.spot-label small { font-size: 0.75rem; color: var(--ink-soft); }
+.spot-detail { padding: 2px 4px 10px; }
+.spot-detail .detail-actions { margin-top: 10px; }
+.mini-label { margin: 12px 0 0; font-size: 0.82rem; font-weight: 500; color: var(--ink-soft); }
+.strip.mini { padding-top: 8px; }
+.strip.mini .thumb { width: 54px; height: 68px; }
 
 /* Màn hình rộng: bảng sửa nằm bên phải để vẫn nhìn thấy slider */
 @media (min-width: 1000px) {

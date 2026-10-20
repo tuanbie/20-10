@@ -3,6 +3,7 @@ import { CONFIG } from "../config.js";
 import { burst } from "../lib/fx.js";
 import { Music } from "../lib/music.js";
 import { petals } from "../lib/petals.js";
+import { useSpot } from "./Spot.jsx";
 
 const TAPS = 5;
 const NOTES = [72, 74, 76, 79, 84];
@@ -12,6 +13,7 @@ export default function Finale() {
   const [taps, setTaps] = useState(0);
   const [full, setFull] = useState(false);
   const btnRef = useRef(null);
+  const { photo, editing, pick } = useSpot("finale");
 
   const center = () => {
     const rc = btnRef.current.getBoundingClientRect();
@@ -57,6 +59,7 @@ export default function Finale() {
         aria-label={full ? "Trái tim đã đầy" : "Trái tim, chạm để lấp đầy"}
         onClick={onTap}
         data-no-fx
+        data-spot="finale"
       >
         <svg viewBox="0 0 100 92" aria-hidden="true">
           <defs>
@@ -75,8 +78,28 @@ export default function Finale() {
               style={{ transform: `translateY(${(92 * (1 - taps / TAPS)).toFixed(1)}px)` }}
             />
           </g>
+          {photo && (
+            <>
+              <image
+                className={`heart-photo${full || editing ? " on" : ""}`}
+                href={photo.url}
+                x="0"
+                y="0"
+                width="100"
+                height="92"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath="url(#heart-clip)"
+              />
+              <path className="heart-line" d={HEART} />
+            </>
+          )}
         </svg>
       </button>
+      {editing && (
+        <button type="button" className="ghost-btn spot-edit" onClick={pick} data-no-fx>
+          {photo ? "Đổi ảnh trong trái tim" : "+ Ảnh trong trái tim"}
+        </button>
+      )}
       <p className="heart-count" aria-live="polite">
         {hint}
       </p>
